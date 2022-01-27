@@ -1,9 +1,12 @@
-import logo from './logo.svg';
 import './App.css';
 import Todos from './components/Todos';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import About from './components/About';
 import { useState } from 'react';
+import AddTodos from './components/AddTodos';
+import { BrowserRouter as Router,Routes, Route } from 'react-router-dom';
+
 
 function App() {
   const onDelete = (todo) => {
@@ -12,10 +15,7 @@ function App() {
       return e!==todo;
     }))
   }
-  const addTodos = () => {
-    console.log('add todos called');
-    // setTodos({sn: 4, title: "go to ground", desc: "lkjlkjlkjlklkjkl"})
-  }
+
   const [todos, setTodos] = useState([
     {
       sn: 1,
@@ -26,19 +26,45 @@ function App() {
       sn: 2,
       title: "Go to the mall",
       desc: 'go to the mall and get the work done'
-    },
-    {
-      sn: 3,
-      title: "Go to the gym",
-      desc: "go to the gym and get the work done"
     }
   ]);
+
+  const addTodo = (title,desc) => {
+    let sno;
+    if(todos.length === 0){
+      sno = 1;
+    }else {
+      sno = todos[todos.length-1].sn + 1;
+    }
+    const myTodos = {
+      sn : sno,
+      title : title,
+      desc : desc
+    }
+    setTodos([...todos, myTodos]);
+    console.log(myTodos);
+  }
+
   return (
     <div className="App">
+    <Router>
       <Header title="My Todos" searchBar={false}/>
-      <Todos todos={todos} onDelete={onDelete} addTodo={addTodos}/>
+      <Routes>
+        <Route exact path="/" element={
+          <>
+          <AddTodos addTodo={addTodo}/>
+              <Todos todos={todos} onDelete={onDelete}/>
+              </>
+        }>
+        
+        </Route>
+        <Route exact path="/about" element={
+              <About/>}>
+        </Route>
+      </Routes>
       <Footer/>
-    </div>
+    </Router>
+    </div>   
   );
 }
 
